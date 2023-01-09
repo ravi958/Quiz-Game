@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    <meta charset="utf-8">
+    <title>Quiz</title>
+    <style>
+        body {
+            margin: 1rem auto;
+            padding: 3rem;
+            font-family: sans-serif;
+        }
+
+        header {
+            width: 50%;
+            margin: 1em auto;
+        }
+
+        main {
+            min-width: 25rem;
+            max-width: 50%;
+            margin: 0px auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #statement {
+            border: 1px solid black;
+            border-radius: 0.5rem;
+            box-shadow: 5px 5px 5px gray;
+            padding: 1rem;
+            font-size: x-large;
+            text-align: center;
+            margin: 1rem 0px;
+            min-height: 2em;
+        }
+
+        #nextQuestion {
+            padding: 1rem;
+            border: 1px solid black;
+            font-size: medium;
+            border-radius: 5px;
+            box-shadow: 5px 5px 5px gray;
+            text-align: center;
+        }
+
+        #explanation {
+            padding: 1rem;
+            text-align: center;
+        }
+
+        #options {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        button {
+            padding: 0.5rem;
+            font-size: medium;
+            border-radius: 5px;
+        }
+
+        .correct {
+            background-color: lightgreen;
+        }
+
+        .incorrect {
+            background-color: lightpink;
+        }
+        .hidden{
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Quiz.js</h1>
+        <p>Do you know JS? Find out!</p>
+    </header>
+
+    <main>
+        <div id="statement">
+
+        </div>
+
+        <div id="options">
+            <button name="true" value="true">true</button>
+            <button name="false" value="false">false</button>
+        </div>
+
+        <div id="explanation" class="hidden">
+
+        </div>
+
+        <div><button id="next-question" name="next-question">Next Question</button>
+        </div>
+
+    </main>
+
+</body>
+
+<script type="text/javascript">
+
+
+    // TODO 1: Declare & assign variables pointing to the corresponding element(s)
+    // statement should be the "statement" div
+    // optionButtons should be all the elements within the "options" div
+    // explanation should be the "explanation" div
+    const optionButtons = document.getElementById("options").children;
+    const explanation = document.getElementById("explanation");
+    const nextButton = document.getElementById("next-question");
+    let fact;
+
+
+    // TODO 2: Declare & assign a variable called fact
+    // Its value should be an object with a statement, true/false answer, and explanation 
+    const facts = [
+        {
+            statement: "JavaScript was invented in 1995",
+            answer: "true",
+            explanation: "Brendan Eich created JS at Netscape in 1995. The initial version of the language was written in just 10 days."
+        },
+
+        {
+            statement: "React is a JS library",
+            answer: true,
+            explanation: "Reactjs is JS library"
+        },
+        {
+            statement: "Arrays are objects",
+            answer: true,
+            explanation: "Array is a special type of object"
+        },
+        {
+            "statement": "Strings in JS are editable values",
+            "answer": "false",
+            "explanation": "In JavaScript strings are immutable values, meaning they cannot be edited; however, they can replaced with new, different strings."
+        },
+        {
+            "statement": "1 + 1 === 2",
+            "answer": "true",
+            "explanation": "The plus operator gives the sum of two numbers."
+        },
+        {
+            "statement": "'1' + '1' === '2'",
+            "answer": "false",
+            "explanation": "The plus operator concatenates (joins together) strings, so '1' + '1' === '11'."
+        },
+        {
+            "statement": "typeof ['J', 'S'] === 'array'",
+            "answer": "false",
+            "explanation": "Arrays have the type 'object'. In JS, everything is either a primitive data type (e.g. 'string', 'number') or an object. Arrays are a kind of object with some special properties.  "
+        }
+    ];
+
+    function hide(element){
+        element.classList.add("hidden")
+    }
+
+    function show(element){
+        element.classList.remove("hidden");
+    }
+
+     // TODO 4: Declare disable & enable functions to set or remove the "disabled" attribute from a given button element
+    // disable(button) should set the button element's attribute "disabled" to the value ""
+    function disable(button){
+        button.setAttribute("disabled", "");
+    }
+        // enable(button) should remove the attribute "disabled" from the button element
+    function enable(button){
+        button.removeAttribute("disabled");
+    }
+       
+
+    // TODO 3: Set the text of the statement element to the fact's statements
+     function getNextFact(){
+        fact= facts.shift();
+        document.getElementById("statement").textContent= fact.statement;
+
+        hide(explanation);
+        for(let option of optionButtons){
+            //clear any previous classes
+            option.classList.remove("correct");
+            option.classList.remove("incorrect");
+            //make sure buttons are enabled
+            enable(option);
+        }
+        disable(nextButton);
+     }
+    
+    nextButton.addEventListener("click", getNextFact);
+
+    // TODO 6A: Use a for loop to add a click event listener to each of the optionButtons
+    // TODO 6B: Within the event handler function, display the fact's explanation by setting the text of the explanation element
+    for (let buttons of optionButtons) {
+        buttons.addEventListener("click", (e) => {
+            // TODO 7: Within the event handler function, 
+            // Use a for loop to disable all the option buttons
+            for (let button of optionButtons) {
+                disable(button);
+            }
+             if(facts.length > 0){
+                enable(nextButton);
+             } else{
+                nextButton.textContent= "No more questions!"
+             }
+
+             const guess= e.target.value;
+
+            // TODO 8: Within the event handler function,
+            // Get the guessed value from the clicked button
+            // Use a conditional to compare the guess to the fact's answer
+            // and add the "correct"/"incorrect" class as appropriate
+            if (guess === fact.answer) {
+                e.target.classList.add("correct")
+            }
+            else {
+                e.target.classList.add("incorrect")
+            }
+            explanation.textContent= fact.explanation;
+            show(explanation);
+        })
+    }
+    getNextFact();
+
+</script>
+
+</html>
